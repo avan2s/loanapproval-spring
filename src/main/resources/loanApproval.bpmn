@@ -76,17 +76,12 @@
     <bpmn:userTask id="Task_DeterminePerson" name="Bestimme ob neue Person gebraucht wird" camunda:assignee="demo">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="newPersonIsNeeded" label="New Person needed?" type="boolean" defaultValue="false" />
-          <camunda:formField id="action_DeterminePerson" label="Akzeptieren" type="string" defaultValue="true">
-            <camunda:properties>
-              <camunda:property id="action_1" value="alle akzeptieren" />
-              <camunda:property id="action_1_translationKey" value="de_sdifjijs" />
-              <camunda:property id="onCompletionStatus" value="50" />
-              <camunda:property id="action" />
-            </camunda:properties>
+          <camunda:formField id="FormField_0r9fr70" label="labelname" type="enum">
+            <camunda:value id="id1" name="name1" />
+            <camunda:value id="id2" name="name2" />
           </camunda:formField>
-          <camunda:formField id="action_Decline" />
         </camunda:formData>
+        <camunda:taskListener delegateExpression="${taskListener1Bean}" event="complete" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_10sfqkx</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1pz171q</bpmn:outgoing>

@@ -54,5 +54,5 @@
     <bean id="calculateInterestService" class="org.camunda.bpm.getstarted.loanapproval.CalculateInterestService"/>
     <bean id="executionListenerOutputVariables"
           class="org.camunda.bpm.executionlisteners.ExecutionListenerOutputVariables"/>
-
+    <bean id="taskListener1Bean" class="org.camunda.bpm.tasklistener.TaskListener1"/>
 </beans>
