@@ -24,10 +24,9 @@
       <bpmn:extensionElements>
         <camunda:in variables="all" />
         <camunda:out variables="all" />
-        <camunda:executionListener expression="${calculateInterestService.ex()}" event="end" />
+        <camunda:executionListener delegateExpression="${executionListenerActionPrinter}" event="end" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0cd9ekm</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_00x9mlr</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1yl2v96</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="${calculateInterestService.getPersons()}" camunda:elementVariable="person" />
     </bpmn:callActivity>
@@ -48,21 +47,16 @@
       <bpmn:incoming>SequenceFlow_0ide827</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0nk6roz</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="SequenceFlow_00x9mlr" sourceRef="BoundaryEvent_1oc797k" targetRef="Task_00hbixl" />
-    <bpmn:boundaryEvent id="BoundaryEvent_1oc797k" attachedToRef="Task_00hbixl">
-      <bpmn:outgoing>SequenceFlow_00x9mlr</bpmn:outgoing>
-      <bpmn:errorEventDefinition errorRef="Error_06h30nh" />
-    </bpmn:boundaryEvent>
   </bpmn:process>
   <bpmn:process id="processCallActivity" name="CallInterface" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1wdt6rv">
       <bpmn:outgoing>SequenceFlow_10sfqkx</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_10sfqkx" sourceRef="StartEvent_1wdt6rv" targetRef="Task_DeterminePerson" />
-    <bpmn:exclusiveGateway id="ExclusiveGateway_1kknu9a" name="Eskalation?" default="SequenceFlow_0j67rdv">
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1kknu9a" name="Eskalation?" default="SequenceFlow_1j9hfgt">
       <bpmn:incoming>SequenceFlow_03dgjrp</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_18shhyz</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0j67rdv</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1j9hfgt</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1pz171q" sourceRef="Task_DeterminePerson" targetRef="Task_0om56ny" />
     <bpmn:sequenceFlow id="SequenceFlow_18shhyz" sourceRef="ExclusiveGateway_1kknu9a" targetRef="IntermediateThrowEvent_1tcvlkm">
@@ -72,14 +66,10 @@
       <bpmn:incoming>SequenceFlow_18shhyz</bpmn:incoming>
       <bpmn:escalationEventDefinition escalationRef="Escalation_1oq1k02" />
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0j67rdv" sourceRef="ExclusiveGateway_1kknu9a" targetRef="ExclusiveGateway_0skubs1" />
     <bpmn:userTask id="Task_DeterminePerson" name="Bestimme ob neue Person gebraucht wird" camunda:assignee="demo">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="FormField_0r9fr70" label="labelname" type="enum">
-            <camunda:value id="id1" name="name1" />
-            <camunda:value id="id2" name="name2" />
-          </camunda:formField>
+          <camunda:formField id="newPersonIsNeeded" label="labelname" type="boolean" defaultValue="false" />
         </camunda:formData>
         <camunda:taskListener delegateExpression="${taskListener1Bean}" event="complete" />
       </bpmn:extensionElements>
@@ -92,21 +82,9 @@
       <bpmn:outgoing>SequenceFlow_03dgjrp</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="EndEvent_1dznm1s">
-      <bpmn:incoming>SequenceFlow_0mn436c</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1j9hfgt</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0skubs1" default="SequenceFlow_0mn436c">
-      <bpmn:incoming>SequenceFlow_0j67rdv</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0mn436c</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_1hlfz00</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_0mn436c" sourceRef="ExclusiveGateway_0skubs1" targetRef="EndEvent_1dznm1s" />
-    <bpmn:sequenceFlow id="SequenceFlow_1hlfz00" sourceRef="ExclusiveGateway_0skubs1" targetRef="EndEvent_0p1836d">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${calculateInterestService.hasChanged(execution)}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:endEvent id="EndEvent_0p1836d">
-      <bpmn:incoming>SequenceFlow_1hlfz00</bpmn:incoming>
-      <bpmn:errorEventDefinition errorRef="Error_06h30nh" />
-    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1j9hfgt" sourceRef="ExclusiveGateway_1kknu9a" targetRef="EndEvent_1dznm1s" />
   </bpmn:process>
   <bpmn:escalation id="Escalation_1oq1k02" name="Escalation_AddListNeeded" escalationCode="Escalation_AddListNeeded" />
   <bpmn:error id="Error_06h30nh" name="Error_PersonSizeChanged" errorCode="Error_PersonSizeChanged" />
@@ -221,13 +199,6 @@
           <dc:Bounds x="923" y="520" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0j67rdv_di" bpmnElement="SequenceFlow_0j67rdv">
-        <di:waypoint xsi:type="dc:Point" x="673" y="502" />
-        <di:waypoint xsi:type="dc:Point" x="783" y="502" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="683" y="477" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1yl2v96_di" bpmnElement="SequenceFlow_1yl2v96">
         <di:waypoint xsi:type="dc:Point" x="616" y="161" />
         <di:waypoint xsi:type="dc:Point" x="787" y="161" />
@@ -263,48 +234,13 @@
           <dc:Bounds x="549" y="219" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_00x9mlr_di" bpmnElement="SequenceFlow_00x9mlr">
-        <di:waypoint xsi:type="dc:Point" x="567" y="103" />
-        <di:waypoint xsi:type="dc:Point" x="567" y="51" />
-        <di:waypoint xsi:type="dc:Point" x="470" y="51" />
-        <di:waypoint xsi:type="dc:Point" x="470" y="130" />
-        <di:waypoint xsi:type="dc:Point" x="517" y="130" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="473.5" y="26" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ExclusiveGateway_0skubs1_di" bpmnElement="ExclusiveGateway_0skubs1" isMarkerVisible="true">
-        <dc:Bounds x="782.5131086142322" y="477" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="762.5131086142322" y="527" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0mn436c_di" bpmnElement="SequenceFlow_0mn436c">
-        <di:waypoint xsi:type="dc:Point" x="833" y="502" />
+      <bpmndi:BPMNEdge id="SequenceFlow_1j9hfgt_di" bpmnElement="SequenceFlow_1j9hfgt">
+        <di:waypoint xsi:type="dc:Point" x="673" y="502" />
         <di:waypoint xsi:type="dc:Point" x="950" y="502" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="846.5" y="477" width="90" height="20" />
+          <dc:Bounds x="766.5" y="477" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_1hlfz00_di" bpmnElement="SequenceFlow_1hlfz00">
-        <di:waypoint xsi:type="dc:Point" x="808" y="527" />
-        <di:waypoint xsi:type="dc:Point" x="808" y="582" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="778" y="544.5" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_04xii4m_di" bpmnElement="EndEvent_0p1836d">
-        <dc:Bounds x="790" y="582" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="763" y="618" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="BoundaryEvent_08thipk_di" bpmnElement="BoundaryEvent_1oc797k">
-        <dc:Bounds x="549" y="103" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="522" y="139" width="90" height="20" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

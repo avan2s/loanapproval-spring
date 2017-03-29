@@ -11,6 +11,6 @@ public class ExecutionListenerActionPrinter implements ExecutionListener {
     public void notify(DelegateExecution execution) throws Exception {
         FormService formService = execution.getProcessEngineServices().getFormService();
 
-        System.out.println();
+        System.out.println("listener called");
     }
 }

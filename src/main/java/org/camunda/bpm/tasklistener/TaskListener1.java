@@ -15,14 +15,15 @@ import java.util.Map;
  */
 public class TaskListener1 implements TaskListener {
     public void notify(DelegateTask task) {
-        FormService formService = task.getProcessEngineServices().getFormService();
-        TaskFormData taskFormData = formService.getTaskFormData(task.getId());
-        List<FormField> formFields = taskFormData.getFormFields();
-        for(FormField f : formFields){
-            Map<String, String> properties = f.getProperties();
-            System.out.println(properties);
-        }
-        VariableMap taskFormVariables = formService.getTaskFormVariables(task.getId());
-        task.getId();
+//        FormService formService = task.getProcessEngineServices().getFormService();
+//        TaskFormData taskFormData = formService.getTaskFormData(task.getId());
+//        List<FormField> formFields = taskFormData.getFormFields();
+//        for(FormField f : formFields){
+//            Map<String, String> properties = f.getProperties();
+//            System.out.println(properties);
+//        }
+//        VariableMap taskFormVariables = formService.getTaskFormVariables(task.getId());
+//        task.getId();
+        System.out.println("is called");
     }
 }
