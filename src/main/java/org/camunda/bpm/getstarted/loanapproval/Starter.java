@@ -13,7 +13,7 @@ public class Starter implements InitializingBean {
     private RuntimeService runtimeService;
 
     public void afterPropertiesSet() throws Exception {
-        runtimeService.startProcessInstanceByKey("loanApproval");
+        //runtimeService.startProcessInstanceByKey("loanApproval","businessKey-123");
     }
 
     public void setRuntimeService(RuntimeService runtimeService) {

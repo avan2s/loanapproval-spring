@@ -52,6 +52,11 @@
 
     <bean class="org.camunda.bpm.getstarted.loanapproval.Starter"/>
     <bean id="calculateInterestService" class="org.camunda.bpm.getstarted.loanapproval.CalculateInterestService"/>
+    <bean id="delegateVariableSetter" class="org.camunda.bpm.getstarted.loanapproval.DelegateVariableSetter"/>
+    <bean id="delegateSendInformation" class="org.camunda.bpm.getstarted.loanapproval.DelegateSendInformation"/>
+    <bean id="delegateLongLasting" class="org.camunda.bpm.getstarted.loanapproval.DelegateLongLasting"/>
+
+
     <bean id="executionListenerActionPrinter"
           class="org.camunda.bpm.executionlisteners.ExecutionListenerActionPrinter"/>
     <bean id="executionListenerOutputVariables"
